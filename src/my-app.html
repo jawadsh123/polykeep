@@ -128,14 +128,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			<paper-button class="toastButton" on-tap="_undoDelete">Undo</paper-button>
 		</paper-toast>
 
-		<paper-toast id="archiveToast" >
+		<paper-toast id="archiveToast" on-ready="_archiveToast">
 			Note Archived
 			<paper-button class="toastButton" on-tap="_undoArchive">Undo</paper-button>
-		</paper-toast>
-
-		<paper-toast id="swSuccessToast" duration="3000">
-			Caching Complete. The app is now available offline. ;)
-			<paper-button class="toastButton" on-tap="_closeToast">Great!</paper-button>
 		</paper-toast>
 
 		<app-location route="{{route}}"></app-location>
@@ -214,19 +209,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			this.addEventListener("deletingNote", this._deletingToast);
 			this.addEventListener("archiveNote", this._archiveToast)
 			this.addEventListener("deletingArchive", this._deletingArchiveToast);
+
+			window.addEventListener("WebComponentsReady", (e) => {
+				console.log('evrython up')
+
+			})
 		}
 
+		attached() {
+			super.attached();
+		}
 
 		connectedCallback() {
 			super.connectedCallback();
-			console.log('attached?');
+			console.log('connected?');
 			console.log(this.swState);
 		}
 
 		serviceWorkerEvent(event) {
-
-			// this.shadowRoot.querySelector("#deleteToast").open();
+			console.log('sw callout')
+			this.shadowRoot.querySelector("#deleteToast").open();
 			this.swState = event;
+			this.shadowRoot.querySelector("#deleteToast").open();
 		}
 
 		_deletingToast() {

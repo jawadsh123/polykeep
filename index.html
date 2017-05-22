@@ -17,9 +17,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	<title>Polykeep</title>
 	<meta name="description" content="A demo to showcase what can be achieved with a Progressive Web App">
 
-	<link rel="icon" href="/images/favicon.ico">
+	<link rel="icon" href="./images/favicon.ico">
 
-	<link rel="manifest" href="/manifest.json">
+	<link rel="manifest" href="./manifest.json">
 
 	<meta name="theme-color" content="#1565C0">
 
@@ -33,21 +33,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	<meta name="apple-mobile-web-app-title" content="Polykeep">
 
 	<!-- Homescreen icons -->
-	<link rel="apple-touch-icon" href="/images/manifest/android-icon-48x48.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/android-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/android-icon-96x96.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/android-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/android-icon-192x192.png">
+	<link rel="apple-touch-icon" href="./images/manifest/android-icon-48x48.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="./images/manifest/android-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="96x96" href="./images/manifest/android-icon-96x96.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="./images/manifest/android-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="192x192" href="./images/manifest/android-icon-192x192.png">
 
 	<!-- Tile icon for Windows 8 (144x144 + tile color) -->
-	<meta name="msapplication-TileImage" content="/images/manifest/android-icon-144x144.png">
+	<meta name="msapplication-TileImage" content="./images/manifest/android-icon-144x144.png">
 	<meta name="msapplication-TileColor" content="#3f51b5">
 	<meta name="msapplication-tap-highlight" content="no">
 
 
-	<script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+	<script src="./bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
-	<link rel="import" href="/src/my-app.html">
+	<link rel="import" href="./src/my-app.html">
 
 	<style>
 		body {
@@ -60,13 +60,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	</style>
 </head>
 <body>
+
+
+	<paper-toast id="swSuccessToast" duration="3000">
+		Caching Complete. The app is now available offline. ;)
+		<paper-button class="toastButton" on-tap="_closeToast">Great!</paper-button>
+	</paper-toast>
+
 	<my-app></my-app>
 
 	<!-- Load and register pre-caching Service Worker -->
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function() {
-				navigator.serviceWorker.register('/service-worker.js').then(reg => {
+				navigator.serviceWorker.register('./service-worker.js').then(reg => {
 					
 					// if service changes 
 					reg.onupdatefound = function() {
@@ -77,9 +84,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 								case "installed":
 									if (navigator.serviceWorker.controller) {
 										console.log('updated content availabe');
+
 									} else {
 										console.log('app is now available offline');
-										
+										document.querySelector("my-app")._archiveToast();
 									}
 									break;
 								case "redundant":
@@ -95,10 +103,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		}
 
 		window.onload = function() {
-			console.log('radyemar');
-			var app = document.querySelector("my-app");
-			app.serviceWorkerEvent("success");
 		}
+
+
+		document.addEventListener("DOMContentLoaded", () => {
+			// document.getElementById("swSuccessToast").open();
+		})
+
 	</script>
 </body>
 </html>
