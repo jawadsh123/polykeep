@@ -1,0 +1,61 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src\\my-app.html",
+  "fragments": [
+    "src\\note-list.html",
+    "src\\archive-note-list.html",
+    "src\\my-view404.html"
+  ],
+  "sources": [
+    "src\\**\\*",
+    "images\\**\\*",
+    "bower.json",
+    "index.html",
+    "src\\my-app.html",
+    "src\\note-list.html",
+    "src\\archive-note-list.html",
+    "src\\my-view404.html"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components\\webcomponentsjs\\*.js",
+    "bower_components\\webcomponentsjs\\*.js"
+  ],
+  "builds": [
+    {
+      "name": "bundled-es6",
+      "bundle": true,
+      "js": {
+        "minify": true,
+        "compile": false
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "addServiceWorker": true
+    },
+    {
+      "name": "unbundled-es6",
+      "bundle": false,
+      "js": {
+        "minify": true,
+        "compile": false
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "addServiceWorker": true
+    }
+  ],
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  }
+}
