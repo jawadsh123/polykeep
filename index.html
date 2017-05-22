@@ -62,10 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body>
 
 
-	<paper-toast id="swSuccessToast" duration="3000">
-		Caching Complete. The app is now available offline. ;)
-		<paper-button class="toastButton" on-tap="_closeToast">Great!</paper-button>
-	</paper-toast>
 
 	<my-app></my-app>
 
@@ -87,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 									} else {
 										console.log('app is now available offline');
-										document.querySelector("my-app")._archiveToast();
+										document.querySelector("my-app").serviceWorkerEvent();
 									}
 									break;
 								case "redundant":

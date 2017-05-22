@@ -123,6 +123,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			}
 		</style>
 
+
+		<paper-toast id="swSuccessToast" duration="3000">
+			Caching Complete. The app is now available offline. ;)
+			<paper-button class="toastButton" on-tap="_closeToast">Great!</paper-button>
+		</paper-toast>
+
 		<paper-toast id="deleteToast" >
 			Note Deleted
 			<paper-button class="toastButton" on-tap="_undoDelete">Undo</paper-button>
@@ -227,10 +233,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		}
 
 		serviceWorkerEvent(event) {
-			console.log('sw callout')
-			this.shadowRoot.querySelector("#deleteToast").open();
-			this.swState = event;
-			this.shadowRoot.querySelector("#deleteToast").open();
+			const toast = this.$.swSuccessToast;
+			toast.open();
 		}
 
 		_deletingToast() {
