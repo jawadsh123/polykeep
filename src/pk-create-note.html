@@ -1,0 +1,177 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="pk-editable-note.html">
+
+
+
+<dom-module id="pk-create-note">
+	<template>
+
+		<style include="iron-flex iron-flex-alignment">
+			paper-fab{
+				will-change: transform;
+				transform: scale(1);
+				position: fixed;
+				right: 16px;
+				bottom: 28px;
+			}
+
+			#dummyFab{
+				will-change: transform;
+				transform: scale(1);
+				position: fixed;
+				right: 16px;
+				bottom: 28px;
+				height: 56px;
+				width: 56px;
+				border-radius: 50%;
+				background-color: var(--accent-color);
+			}
+
+			paper-icon-button {
+				color: white;
+			}
+
+			[hidden] {
+				display: none;
+			}
+
+			.back-btn{
+				position: fixed;
+				top: 16px;
+				left: 16px;
+			}
+
+		</style>
+
+		<paper-fab on-tap="_expandFab" id="fab" icon="add"></paper-fab>
+		<paper-icon-button on-tap="_closeFab" class="back-btn" icon="arrow-back" hidden$="[[hideBackBtn]]"></paper-icon-button>
+		<pk-editable-note></pk-editable-note>
+
+
+
+	</template>
+
+	<script>
+		class CreateNote extends Polymer.Element {
+			static get is() { return 'pk-create-note'; }
+
+			toggleEditableNote() {
+				var editableNote = this.shadowRoot.querySelector("pk-editable-note");
+				if (this.isOpen) {
+					editableNote.showNote();
+				} else {
+					editableNote.hideNote();
+				}
+			}
+
+			static get properties() {
+				return {
+					hideBackBtn: {
+						type: Boolean,
+						value: true,
+					},
+					isOpen: {
+						type: Boolean,
+						value: false,
+					},
+					fabSpeed: {
+						type: Number,
+						value: window.innerWidth>600 ? 200:390,
+					}
+				}
+			}
+
+			ready() {
+				super.ready();
+				this.addEventListener("goBack", this._closeFab);
+
+			}
+
+
+			_expandFab(e) {
+				var fab = this.$.fab;
+
+				var dummyFab = document.createElement("div");
+				dummyFab.setAttribute("id", "dummyFab")
+				fab.insertAdjacentElement("afterend", dummyFab);
+
+				var targetWidth = window.innerWidth * 3;
+				var targetHeight =  window.innerHeight * 3;
+
+				var targetRadius = Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2));
+
+				var targetScale = "scale("+ targetRadius/28 +")";
+
+				var expansion = dummyFab.animate([{
+					transform: 'scale(1)',
+				}, {
+					transform: targetScale,
+				}], {
+					duration: this.fabSpeed,
+					easing: "cubic-bezier(0.4, 0.0, 0.2, 1)",
+					fill: "forwards",
+				});
+
+				expansion.onfinish = () => {
+					this.hideBackBtn = false;
+					this.isOpen = true;
+					this._toggleScroll();
+					this.toggleEditableNote();
+				}
+
+			}
+
+			_closeFab(e) {
+				this.hideBackBtn = true;
+				var dummyFab = this.shadowRoot.querySelector("#dummyFab");
+
+				var targetWidth = window.innerWidth * 3;
+				var targetHeight =  window.innerHeight * 3;
+
+				var targetRadius = Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2));
+
+				var targetScale = "scale("+ targetRadius/28 +")";
+
+				var shrinking = dummyFab.animate([{
+					transform: targetScale,
+				}, {
+					transform: 'scale(1)',
+				}], {
+					duration: this.fabSpeed,
+					easing: "cubic-bezier(0.4, 0.0, 0.2, 1)",
+					fill: "forwards",
+				});
+
+				this.isOpen = false;
+				this.toggleEditableNote();
+
+				shrinking.onfinish = () => {
+					
+					this._toggleScroll();
+					dummyFab.parentNode.removeChild(dummyFab);
+				};
+			}
+
+			_toggleScroll() {
+				if (this.isOpen){
+					document.querySelector("body").style.overflow = 'hidden';
+				} else {
+					document.querySelector("body").style.overflow = 'auto';
+				}
+			}
+		}
+
+		window.customElements.define(CreateNote.is, CreateNote);
+	</script>
+</dom-module>
